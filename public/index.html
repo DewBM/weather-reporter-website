@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Colombo Weather</title>
+
+    <!-- Tailwind CSS CDN (for responsive UI) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js CDN -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+
+<body class="h-full bg-blue-50 text-gray-800">
+
+    <div x-data="weatherApp()" x-init="fetchWeather()" class="flex flex-col items-center justify-center min-h-screen p-4">
+	<h1 class="text-3xl font-bold mb-4">Colombo Weather</h1>
+
+	<template x-if="!loading">
+	    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md text-center space-y-4">
+		<div>
+		    <h2 class="text-xl font-semibold mb-1" x-text="weather.location.name"></h2>
+		    <p class="text-gray-500 text-sm" x-text="weather.location.localtime"></p>
+		</div>
+
+		<img :src="`https:${weather.current.condition.icon}`" alt="weather icon" class="mx-auto w-20 h-20">
+
+		<div>
+		    <p class="text-3xl font-bold" x-text="weather.current.temp_c + '°C'"></p>
+		    <p class="text-gray-600 text-lg" x-text="weather.current.condition.text"></p>
+		</div>
+
+		<div class="grid grid-cols-2 gap-4 text-sm text-center mt-4">
+		    <div class="flex flex-col items-center">
+			<p class="font-medium">Wind</p>
+			<p x-text="weather.current.wind_kph + ' kph (' + weather.current.wind_dir + ')'"></p>
+		    </div>
+
+		    <div class="flex flex-col items-center">
+			<p class="font-medium">Humidity</p>
+			<p x-text="weather.current.humidity + '%'"></p>
+		    </div>
+
+		    <div class="flex flex-col items-center">
+			<p class="font-medium">UV Index</p>
+			<p x-text="weather.current.uv"></p>
+		    </div>
+
+		    <div class="flex flex-col items-center">
+			<p class="font-medium">Feels Like</p>
+			<p x-text="weather.current.feelslike_c + '°C'"></p>
+		    </div>
+		</div>
+	    </div>
+	</template>
+    </div>
+
+    <!-- Custom JS -->
+    <script src="../js/app.js"></script>
+</body>
+</html>
+
