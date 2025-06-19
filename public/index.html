@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Colombo Weather</title>
 
-    <!-- Tailwind CSS CDN (for responsive UI) -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Alpine.js CDN -->
@@ -13,14 +13,34 @@
 </head>
 
 <body class="h-full bg-blue-50 text-gray-800">
-
     <div x-data="weatherApp()" x-init="fetchWeather()" class="flex flex-col items-center justify-center min-h-screen p-4">
-	<h1 class="text-3xl font-bold mb-4">Colombo Weather</h1>
+	<h1 class="text-3xl font-bold mb-4">Weather</h1>
 
+	<!-- 🔍 Search Box -->
+	<form @submit.prevent="fetchWeather()" class="w-full max-w-md mb-6">
+	    <div class="flex items-center bg-white rounded-lg shadow-md overflow-hidden">
+		<input 
+		    type="text" 
+		    placeholder="Search for a city..." 
+		    x-model="searchQuery" 
+		    class="flex-grow px-4 py-2 outline-none"
+		>
+		<button 
+		    type="submit" 
+		    class="bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition"
+		>
+		    Search
+		</button>
+	    </div>
+	</form>
+
+	<!-- 🌤 Weather Display -->
 	<template x-if="!loading">
 	    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md text-center space-y-4">
+
 		<div>
-		    <h2 class="text-xl font-semibold mb-1" x-text="weather.location.name"></h2>
+		    <h2 class="text-xl font-semibold mb-0" x-text="weather.location.name"></h2>
+		    <p class="text-gray-500 text-sm" x-text="weather.location.region"></p>
 		    <p class="text-gray-500 text-sm" x-text="weather.location.localtime"></p>
 		</div>
 
@@ -57,7 +77,7 @@
     </div>
 
     <!-- Custom JS -->
-    <script src="../js/app.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>
 
