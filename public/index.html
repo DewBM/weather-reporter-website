@@ -24,23 +24,35 @@
 		    placeholder="Search for a city..."
 		    x-model="searchQuery"
 		    @input="onSearchInput"
+		    @keydown.arrow-down.prevent="moveDown()"
+		    @keydown.arrow-up.prevent="moveUp()"
+		    @keydown.enter.prevent="selectSuggestion(suggestions[activeIndex])"
 		    class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
 		/>
 
 		<!-- Suggestions Dropdown -->
 		<ul 
-		    class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
-		    x-show="suggestions.length > 0"
-		    @click.away="suggestions = []"
+		    class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto divide-y divide-gray-200"
+		    x-show="showSuggestions"
+		    @click.outside="showSuggestions = false"
 		>
 		    <template x-for="(suggestion, index) in suggestions" :key="index">
 			<li 
 			    @click="selectSuggestion(suggestion)"
-			    class="px-4 py-2 hover:bg-blue-100 cursor-pointer"
-			    x-text="suggestion"
-			></li>
+			    :data-index="index"
+			    :class="{
+			    'bg-blue-100 text-blue-900': index === activeIndex,
+			    'hover:bg-blue-100 cursor-pointer': true
+			    }"
+			    class="px-4 py-2 flex justify-between items-center"
+			>
+			    <div>
+				<p class="text-base font-medium" x-text="suggestion.name"></p>
+				<p class="text-sm text-gray-500" x-text="suggestion.country"></p>
+			    </div>
+			</li>
 		    </template>
-		</ul>
+		</ul>	
 	    </div>
 	</form>
 
@@ -50,7 +62,7 @@
 
 		<div>
 		    <h2 class="text-xl font-semibold mb-0" x-text="weather.location.name"></h2>
-		    <p class="text-gray-500 text-sm" x-text="weather.location.region"></p>
+		    <p class="text-gray-500 text-sm" x-text="weather.location.country"></p>
 		    <p class="text-gray-500 text-sm" x-text="weather.location.localtime"></p>
 		</div>
 
