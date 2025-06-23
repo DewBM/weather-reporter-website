@@ -29,7 +29,7 @@ const fetchSuggestions = async (query, context) => {
     }
 }
 
-const debouncedSearch = debounce(fetchSuggestions, 500);
+const debouncedSearch = debounce(fetchSuggestions, 300);
 
 function weatherApp() {
     return {
