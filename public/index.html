@@ -58,19 +58,29 @@
 
 	<!-- 🌤 Weather Display -->
 	<div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md text-center space-y-4 min-h-[300px] flex items-center justify-center">
-	    <template x-if="loading">
-		<div class="flex items-center justify-center space-x-2 text-blue-600">
-		    <svg class="animate-spin h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-			<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-			<path class="opacity-75" fill="currentColor"
-			    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z">
-			</path>
-		    </svg>
-		    <span>Loading weather data...</span>
-		</div>
-	    </template>
+	<!-- 🔄 Loading -->
+	  <template x-if="loading">
+	    <div class="flex items-center justify-center space-x-2 text-blue-600">
+	      <svg class="animate-spin h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+		<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+		<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+	      </svg>
+	      <span>Loading weather data...</span>
+	    </div>
+	  </template>
 
-	    <template x-if="!loading">
+	  <!-- ❌ Error -->
+	  <template x-if="!loading && error">
+	    <div class="text-red-600 space-y-2">
+	      <svg class="mx-auto h-8 w-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+		      d="M12 9v2m0 4h.01M12 5a7 7 0 100 14 7 7 0 000-14z" />
+	      </svg>
+	      <p class="text-lg font-semibold">Oops!</p>
+	      <p x-text="error" class="text-sm text-gray-600"></p>
+	    </div>
+	  </template>
+	    <template x-if="!loading && !error">
 		<div class="w-full space-y-4">
 		    <div>
 			<h2 class="text-xl font-semibold mb-0" x-text="weather.location.name"></h2>

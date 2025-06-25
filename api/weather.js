@@ -21,10 +21,19 @@ export default async function handler(req, res) {
 
     try {
         const response = await fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}`);
-        const data = await response.json();
-        res.status(200).json(data);
+
+	if (response.status >= 400 && response.status < 500)
+	    throw new Error("Resource not found.");
+
+	const data = await response.json();
+
+	if (response.status === 200)
+	    res.status(200).json(data);
+	else
+	    res.status(400).json({ error: data.message });
+
     } catch (err) {
-        console.error("Error fetching weather data:", err);
-        res.status(500).json({ error: "Failed to fetch weather data" });
+        console.error("Error fetching weather data:", err.message);
+	res.status(500).json({ error: `Failed to fetch weather data: ${err.message}` });
     }
 }
