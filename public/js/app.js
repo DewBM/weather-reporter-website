@@ -78,6 +78,8 @@ function weatherApp() {
 	onSearchInput() {
 	    if (this.searchQuery != '')
 		debouncedSearch(this.searchQuery, this);
+	    else
+		this.suggestions = [];
 	},
 
 	async selectSuggestion(item) {
