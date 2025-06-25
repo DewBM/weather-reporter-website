@@ -9,23 +9,29 @@ const debounce = (callback, wait) => {
 }
 
 const fetchSuggestions = async (query, context) => {
-    console.log(`Debounced Search: ${query}`);
+    try {
+	const response = await fetch(`/api/suggestions?q=${query}`);
 
-    const response = await fetch(`/api/suggestions?q=${query}`);
-    if (response.status == 200) {
+	if (response.status === 404)
+	    throw new Error("Resource not found for location suggestions!");
+	
 	const data = await response.json();
-
-	if (data.length > 0) {
-	    context.showSuggestions = true;
-	    context.activeIndex = -1;
-	    context.suggestions = data;
+	
+	if (response.status === 200) {
+	    if (data.length > 0) {
+		context.showSuggestions = true;
+		context.activeIndex = -1;
+		context.suggestions = data;
+	    }
+	    else
+		context.showSuggestions = false;
 	}
 	else
-	    context.showSuggestions = false;
-	console.log(data);
+	    throw new Error(data.error);
     }
-    else {
-	console.log(response);
+    catch (e) {
+	context.error = e.message || "Something went wrong fetching location suggestions";
+	console.log(context.error);
     }
 }
 
@@ -40,25 +46,38 @@ function weatherApp() {
 	showSuggestions: false,
 	selectedSuggestion: null,
 	activeIndex: -1,
+	error: null,
 
 	async fetchWeather() {
 	    this.loading = true;
-	    const queryParam = this.selectedSuggestion != null ? `id:${this.selectedSuggestion.id}` : this.searchQuery;
-	    const response = await fetch(`/api/weather?q=${queryParam}`);
-	    if (response.status == 200) {
-		const data = await response.json();
-		this.weather = data;
-		console.log(data);
-	    }
-	    else {
-		console.log(response);
-	    }
+	    this.error = null;
 
-	    this.loading = false;
+	    const queryParam = this.selectedSuggestion != null ? `id:${this.selectedSuggestion.id}` : this.searchQuery;
+
+	    try {
+		const response = await fetch(`/api/weather?q=${queryParam}`);
+
+		if (response.status === 404)
+		    throw new Error("Resource not found for weather data");
+
+		const data = await response.json();
+
+		if (response.status === 200)
+		    this.weather = data;
+		else
+		    throw new Error(data.error);
+	    }
+	    catch (e) {
+		this.error = e.message || "Something went wrong fetching weather data!";
+	    }
+	    finally {
+		this.loading = false;
+	    }
 	},
 
 	onSearchInput() {
-	    debouncedSearch(this.searchQuery, this);
+	    if (this.searchQuery != '')
+		debouncedSearch(this.searchQuery, this);
 	},
 
 	async selectSuggestion(item) {

@@ -22,11 +22,23 @@ export default async function handler(req, res) {
     console.log(req.query);
 
     try {
+	if (!searchText || searchText === '')
+	    throw new Error("Invalid/Empty q query parameter");
+
         const response = await fetch(`https://api.weatherapi.com/v1/search.json?key=${apiKey}&q=${searchText}`);
+
+	if (response.status >= 400 && response.status < 500)
+	    throw new Error("Resource not found.");
+
         const data = await response.json();
-        res.status(200).json(data);
-    } catch (err) {
+
+	if (response.status === 200)
+	    res.status(200).json(data);
+	else
+	    res.status(400).json({ error: data.message });
+    }
+    catch (err) {
         console.error("Error fetching location suggestions:", err);
-        res.status(500).json({ error: "Failed to fetch location suggestions" });
+	res.status(500).json({ error: `Failed to fetch location suggestions: ${err.message}` });
     }
 }
